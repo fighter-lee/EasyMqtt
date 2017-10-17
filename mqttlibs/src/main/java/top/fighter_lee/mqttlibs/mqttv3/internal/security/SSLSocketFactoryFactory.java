@@ -15,7 +15,6 @@
  */
 package top.fighter_lee.mqttlibs.mqttv3.internal.security;
 
-import com.adups.mqtt_libs.mqttv3.MqttSecurityException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,6 +39,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import top.fighter_lee.mqttlibs.mqttv3.MqttSecurityException;
 
 
 /**
@@ -260,7 +260,7 @@ public class SSLSocketFactoryFactory {
 	 * This should not be used for cryptographical purpose, it's a simple
 	 * scrambler to obfuscate clear-text passwords.
 	 * 
-	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#deObfuscate
+	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#deObfuscate
 	 * 
 	 * @param password
 	 *            The password to be encrypted, as a char[] array.
@@ -282,7 +282,7 @@ public class SSLSocketFactoryFactory {
 	 * The inverse operation of obfuscate: returns a cleartext password that was
 	 * previously obfuscated using the XOR scrambler.
 	 * 
-	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
+	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
 	 * 
 	 * @param ePassword
 	 *            An obfuscated password.
@@ -358,7 +358,7 @@ public class SSLSocketFactoryFactory {
 	/**
 	 * Obfuscate any key & trust store passwords within the given properties.
 	 * 
-	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
+	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
 	 * 
 	 * @param p
 	 *            properties
@@ -579,7 +579,7 @@ public class SSLSocketFactoryFactory {
 	 * provided in plain text, but it will be stored internally in a scrambled
 	 * XOR format.
 	 * 
-	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
+	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
 	 * 
 	 * @param configID
 	 *            The configuration identifier for selecting a configuration or
@@ -666,7 +666,7 @@ public class SSLSocketFactoryFactory {
 	 * provided in plain text, but it will be stored internally in a scrambled
 	 * XOR format.
 	 * 
-	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
+	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#obfuscate
 	 * 
 	 * @param configID
 	 *            The configuration identifier for selecting a configuration or
@@ -1089,12 +1089,12 @@ public class SSLSocketFactoryFactory {
 	 * Initializes key- and truststore. Returns an SSL context factory. If no
 	 * SSLProtocol is already set, uses DEFAULT_PROTOCOL
 	 * 
-	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#DEFAULT_PROTOCOL
+	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#DEFAULT_PROTOCOL
 	 * 
 	 * @param configID
 	 *            The configuration ID
 	 * @return An SSL context factory.
-	 * @throws MqttDirectException
+	 * @throws MqttSecurityException
 	 */
 	private SSLContext getSSLContext(String configID)
 			throws MqttSecurityException {
@@ -1237,7 +1237,7 @@ public class SSLSocketFactoryFactory {
 //	 * IllegalArgumentException if the server socket factory could not be
 //	 * created due to underlying configuration problems.
 //	 * 
-//	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#DEFAULT_PROTOCOL
+//	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#DEFAULT_PROTOCOL
 //	 * 
 //	 * @param configID
 //	 *            The configuration identifier for selecting a configuration.
@@ -1267,7 +1267,7 @@ public class SSLSocketFactoryFactory {
 	 * IllegalArgumentException if the socket factory could not be created due
 	 * to underlying configuration problems.
 	 * 
-	 * @see com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory#DEFAULT_PROTOCOL
+	 * @see top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory#DEFAULT_PROTOCOL
 	 * @param configID
 	 *            The configuration identifier for selecting a configuration.
 	 * @return An SSLSocketFactory

@@ -11,8 +11,6 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -30,3 +28,93 @@ dependencies {
     compile 'com.adups.iot:trace:1.0.3'
 
 }
+
+//若以下内容报错，请注释掉以下全部内容
+//def jcenterPropertiesFile = rootProject.file("jcenter.properties")
+//def jcenterProperties = new Properties()
+//jcenterProperties.load(new FileInputStream(jcenterPropertiesFile))
+//
+//def releaseGroup = jcenterProperties['ReleaseGroup']
+//def releaselibName = jcenterProperties['ReleaselibName']
+//def releaseVersion = jcenterProperties['ReleaseVersion']
+//def mUserOrg = jcenterProperties['userOrg']
+//def mRepo = jcenterProperties['repo']
+//def mDesc = jcenterProperties['desc']
+//
+//apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.jfrog.bintray'
+//
+////发布到组织名称名字，必须填写
+//group = releaseGroup
+////发布到JCenter上的项目名字，必须填写
+//def libName = releaselibName
+//// 版本号，下次更新是只需要更改版本号即可
+//version = releaseVersion
+//
+////生成源文件
+//task sourcesJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier = 'sources'
+//}
+////生成文档
+//task javadoc(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//    options.encoding "UTF-8"
+//    options.charSet 'UTF-8'
+//    options.author true
+//    options.version true
+//    failOnError false
+//}
+//
+////文档打包成jar
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+////拷贝javadoc文件
+//task copyDoc(type: Copy) {
+//    from "${buildDir}/docs/"
+//    into "docs"
+//}
+//
+////上传到jcenter所需要的源码文件
+//artifacts {
+//    archives javadocJar
+//    archives sourcesJar
+//}
+//
+//// 配置maven库，生成POM.xml文件
+//install {
+//    repositories.mavenInstaller {
+//        // This generates POM.xml with proper parameters
+//        pom {
+//            project {
+//                packaging 'aar'
+//                name 'mqtt libs'
+//                developers {
+//                    developer {
+//
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+////上传到jcenter
+//Properties properties = new Properties()
+//properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//bintray {
+//    user = properties.getProperty("bintray.user")    //读取 local.properties 文件里面的 bintray.user
+//    key = properties.getProperty("bintray.apikey")   //读取 local.properties 文件里面的 bintray.apikey
+//    configurations = ['archives']
+//    pkg {
+//        userOrg = mUserOrg
+//        repo = mRepo
+//        name = libName    //发布到JCenter上的项目名字，必须填写
+//        desc = mDesc    //项目描述
+//        licenses = ["Apache-2.0"]
+//        publish = true
+//    }
+//}

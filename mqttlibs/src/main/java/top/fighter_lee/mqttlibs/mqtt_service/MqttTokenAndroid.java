@@ -75,7 +75,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#waitForCompletion()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#waitForCompletion()
    */
   @Override
   public void waitForCompletion() throws MqttException, MqttSecurityException {
@@ -93,7 +93,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#waitForCompletion(long)
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#waitForCompletion(long)
    */
   @Override
   public void waitForCompletion(long timeout) throws MqttException,
@@ -151,7 +151,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#isComplete()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#isComplete()
    */
   @Override
   public boolean isComplete() {
@@ -163,7 +163,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#getException()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#getException()
    */
   @Override
   public MqttException getException() {
@@ -175,7 +175,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#getClient()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#getClient()
    */
   @Override
   public IMqttAsyncClient getClient() {
@@ -183,7 +183,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#setActionCallback(IMqttActionListener)
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#setActionCallback(IMqttActionListener)
    */
   @Override
   public void setActionCallback(IMqttActionListener listener) {
@@ -191,7 +191,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#getActionCallback()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#getActionCallback()
    */
   @Override
   public IMqttActionListener getActionCallback() {
@@ -199,7 +199,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#getTopics()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#getTopics()
    */
   @Override
   public String[] getTopics() {
@@ -207,7 +207,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#setUserContext(Object)
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#setUserContext(Object)
    */
   @Override
   public void setUserContext(Object userContext) {
@@ -216,7 +216,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#getUserContext()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#getUserContext()
    */
   @Override
   public Object getUserContext() {
@@ -228,7 +228,7 @@ class MqttTokenAndroid implements IMqttToken {
   }
 
   /**
-   * @see com.adups.mqtt_libs.mqttv3.IMqttToken#getMessageId()
+   * @see top.fighter_lee.mqttlibs.mqttv3.IMqttToken#getMessageId()
    */
   @Override
   public int getMessageId() {

@@ -36,7 +36,7 @@ class MqttDeliveryTokenAndroid extends MqttTokenAndroid
 	}
 
 	/**
-	 * @see com.adups.mqtt_libs.mqttv3.IMqttDeliveryToken#getMessage()
+	 * @see top.fighter_lee.mqttlibs.mqttv3.IMqttDeliveryToken#getMessage()
 	 */
 	@Override
 	public MqttMessage getMessage() throws MqttException {
