@@ -10,6 +10,12 @@ import top.fighter_lee.mqttlibs.mqttv3.MqttException;
 
 public class DisconnectCommand implements Command {
 
+    /**
+     * 延时多久后断开
+     *
+     * @param quiesceTimeout
+     * @return
+     */
     public DisconnectCommand setQuiesceTimeout(long quiesceTimeout) {
         this.quiesceTimeout = quiesceTimeout;
         return this;

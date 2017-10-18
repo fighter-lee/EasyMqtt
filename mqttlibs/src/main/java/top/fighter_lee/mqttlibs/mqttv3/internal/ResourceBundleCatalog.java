@@ -24,7 +24,7 @@ public class ResourceBundleCatalog extends MessageCatalog {
 	
 	public ResourceBundleCatalog() {
 		//MAY throws MissingResourceException
-		bundle = ResourceBundle.getBundle("com.adups.mqtt_libs.mqttv3.internal.nls.messages");
+		bundle = ResourceBundle.getBundle("top.fighter_lee.mqttlibs.mqttv3.internal.nls.messages");
 	}
 
 	protected String getLocalizedMessage(int id) {

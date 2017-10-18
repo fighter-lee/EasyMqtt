@@ -705,7 +705,7 @@ public class MqttService extends Service implements MqttTraceHandler {
   public int onStartCommand(final Intent intent, int flags, final int startId) {
     // run till explicitly stopped, restart when
     // process restarted
-	registerBroadcastReceivers();
+    registerBroadcastReceivers();
 
     return START_STICKY;
   }

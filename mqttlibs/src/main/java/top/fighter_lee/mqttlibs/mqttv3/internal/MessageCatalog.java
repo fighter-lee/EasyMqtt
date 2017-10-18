@@ -27,13 +27,13 @@ public abstract class MessageCatalog {
 				try {
 					// Hide this class reference behind reflection so that the class does not need to
 					// be present when compiled on midp
-					INSTANCE = (MessageCatalog)Class.forName("com.adups.mqtt_libs.mqttv3.internal.ResourceBundleCatalog").newInstance();
+					INSTANCE = (MessageCatalog)Class.forName("top.fighter_lee.mqttlibs.mqttv3.internal.ResourceBundleCatalog").newInstance();
 				} catch (Exception e) {
 					return "";
 				}
-			} else if (ExceptionHelper.isClassAvailable("com.adups.mqtt_libs.mqttv3.internal.MIDPCatalog")){
+			} else if (ExceptionHelper.isClassAvailable("top.fighter_lee.mqttlibs.mqttv3.internal.MIDPCatalog")){
 				try {
-					INSTANCE = (MessageCatalog)Class.forName("com.adups.mqtt_libs.mqttv3.internal.MIDPCatalog").newInstance();
+					INSTANCE = (MessageCatalog)Class.forName("top.fighter_lee.mqttlibs.mqttv3.internal.MIDPCatalog").newInstance();
 				} catch (Exception e) {
 					return "";
 				}

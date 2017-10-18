@@ -100,7 +100,7 @@ import top.fighter_lee.mqttlibs.mqttv3.MqttSecurityException;
  * </ul>
  */
 public class SSLSocketFactoryFactory {
-	private static final String CLASS_NAME = "com.adups.mqtt_libs.mqttv3.internal.security.SSLSocketFactoryFactory";
+	private static final String CLASS_NAME = "top.fighter_lee.mqttlibs.mqttv3.internal.security.SSLSocketFactoryFactory";
 	/**
 	 * Property keys specific to the client).
 	 */

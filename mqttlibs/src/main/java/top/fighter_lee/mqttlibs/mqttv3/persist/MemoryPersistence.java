@@ -38,56 +38,56 @@ public class MemoryPersistence implements MqttClientPersistence {
 	private Hashtable data;
 	
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#close()
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#close()
 	 */
 	public void close() throws MqttPersistenceException {
 		data.clear();
 	}
 
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#keys()
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#keys()
 	 */
 	public Enumeration keys() throws MqttPersistenceException {
 		return data.keys();
 	}
 
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#get(java.lang.String)
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#get(java.lang.String)
 	 */
 	public MqttPersistable get(String key) throws MqttPersistenceException {
 		return (MqttPersistable)data.get(key);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#open(java.lang.String, java.lang.String)
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#open(java.lang.String, java.lang.String)
 	 */
 	public void open(String clientId, String serverURI) throws MqttPersistenceException {
 		this.data = new Hashtable();
 	}
 
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#put(java.lang.String, com.adups.mqtt_libs.mqttv3.MqttPersistable)
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#put(java.lang.String, top.fighter_lee.mqttlibs.mqttv3.MqttPersistable)
 	 */
 	public void put(String key, MqttPersistable persistable) throws MqttPersistenceException {
 		data.put(key, persistable);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#remove(java.lang.String)
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#remove(java.lang.String)
 	 */
 	public void remove(String key) throws MqttPersistenceException {
 		data.remove(key);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#clear()
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#clear()
 	 */
 	public void clear() throws MqttPersistenceException {
 		data.clear();
 	}
 
 	/* (non-Javadoc)
-	 * @see com.adups.mqtt_libs.mqttv3.MqttClientPersistence#containsKey(java.lang.String)
+	 * @see top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence#containsKey(java.lang.String)
 	 */
 	public boolean containsKey(String key) throws MqttPersistenceException {
 		return data.containsKey(key);

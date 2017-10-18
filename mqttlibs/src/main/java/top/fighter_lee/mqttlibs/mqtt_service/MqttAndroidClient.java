@@ -94,7 +94,7 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 		MANUAL_ACK
 	}
 
-	private static final String SERVICE_NAME = "com.adups.mqtt_libs.mqtt_service.MqttService";
+	private static final String SERVICE_NAME = "top.fighter_lee.mqttlibs.mqtt_service.MqttService";
 
 	private static final int BIND_SERVICE_FLAG = 0;
 

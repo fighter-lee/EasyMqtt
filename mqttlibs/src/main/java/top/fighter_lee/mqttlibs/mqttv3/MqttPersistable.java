@@ -17,7 +17,7 @@ package top.fighter_lee.mqttlibs.mqttv3;
 
 /**
  * Represents an object used to pass data to be persisted across the
- * {@link com.adups.mqtt_libs.mqttv3.MqttClientPersistence MqttClientPersistence}
+ * {@link top.fighter_lee.mqttlibs.mqttv3.MqttClientPersistence MqttClientPersistence}
  * interface.
  * <p>
  * When data is passed across the interface the header and payload are 
