@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
  * Created by fighter_lee on 2017/9/28.
  */
@@ -35,6 +38,21 @@ public class Utils {
 
         }
         return ret;
+    }
+
+    public static void closeIO(Closeable... closeables) {
+        if (closeables == null) {
+            return;
+        }
+        for (Closeable closeable : closeables) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

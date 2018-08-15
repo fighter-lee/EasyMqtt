@@ -424,7 +424,9 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 			myContext.bindService(serviceStartIntent, serviceConnection,
 					Context.BIND_AUTO_CREATE);
 
-			if (!receiverRegistered) registerReceiver(this);
+			if (!receiverRegistered) {
+                registerReceiver(this);
+            }
 		}
 		else {
 			pool.execute(new Runnable() {
@@ -434,7 +436,9 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 					doConnect();
 					
 					//Register receiver to show shoulder tap.
-					if (!receiverRegistered) registerReceiver(MqttAndroidClient.this);
+					if (!receiverRegistered) {
+                        registerReceiver(MqttAndroidClient.this);
+                    }
 				}
 
 			});
@@ -1334,8 +1338,9 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 	 */
 	public void setTraceEnabled(boolean traceEnabled) {
 	this.traceEnabled = traceEnabled;
-	if (mqttService !=null)
-			mqttService.setTraceEnabled(traceEnabled);
+	if (mqttService !=null) {
+        mqttService.setTraceEnabled(traceEnabled);
+    }
 	}
 	
 	/**
@@ -1596,11 +1601,11 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 			String severity = data.getString(MqttServiceConstants.CALLBACK_TRACE_SEVERITY);
 			String message =  data.getString(MqttServiceConstants.CALLBACK_ERROR_MESSAGE);
 			String tag = data.getString(MqttServiceConstants.CALLBACK_TRACE_TAG);
-			if (MqttServiceConstants.TRACE_DEBUG.equals(severity)) 
-				traceCallback.traceDebug(tag, message);
-			else if (MqttServiceConstants.TRACE_ERROR.equals(severity)) 
-				traceCallback.traceError(tag, message);
-			else
+			if (MqttServiceConstants.TRACE_DEBUG.equals(severity)) {
+                traceCallback.traceDebug(tag, message);
+            } else if (MqttServiceConstants.TRACE_ERROR.equals(severity)) {
+                traceCallback.traceError(tag, message);
+            } else
 			{
 				Exception e = (Exception) data.getSerializable(MqttServiceConstants.CALLBACK_EXCEPTION);
 				traceCallback.traceException(tag, message, e);
@@ -1746,6 +1751,9 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 	}
 
 	public void startKeepConnect(long repeatTime, long triggerTime) {
+		if (null == mqttService){
+			return;
+		}
 		mqttService.startKeepConnect(repeatTime, triggerTime);
 	}
 

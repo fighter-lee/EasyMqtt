@@ -34,10 +34,12 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.adups.trace.Trace;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import top.fighter_lee.mqttlibs.connect.MqttManager;
+import top.fighter_lee.mqttlibs.connect.NetUtils;
 import top.fighter_lee.mqttlibs.connect.Utils;
 import top.fighter_lee.mqttlibs.mqttv3.DisconnectedBufferOptions;
 import top.fighter_lee.mqttlibs.mqttv3.IMqttDeliveryToken;
@@ -264,6 +266,8 @@ public class MqttService extends Service implements MqttTraceHandler {
     private PendingIntent operation;
     private static final String ACTION_ALARM_KEEP_CONNECT = "ACTION_ALARM_KEEP_CONNECT";
     private KeepConnectReceiver keepConnectReceiver;
+    private SimpleDateFormat simpleDateFormat;
+    private long keepConnectRepeatTime;
 
   public MqttService() {
     super();
@@ -601,22 +605,21 @@ public class MqttService extends Service implements MqttTraceHandler {
     return client;
   }
 
-  /**
-   * Called by the Activity when a message has been passed back to the
-   * application
-   *
-   * @param clientHandle identifier for the client which received the message
-   * @param id identifier for the MQTT message
-   * @return {@link Status}
-   */
-  public Status acknowledgeMessageArrival(String clientHandle, String id) {
-    if (messageStore.discardArrived(clientHandle, id)) {
-      return Status.OK;
+    /**
+     * Called by the Activity when a message has been passed back to the
+     * application
+     *
+     * @param clientHandle identifier for the client which received the message
+     * @param id           identifier for the MQTT message
+     * @return {@link Status}
+     */
+    public Status acknowledgeMessageArrival(String clientHandle, String id) {
+        if (messageStore.discardArrived(clientHandle, id)) {
+            return Status.OK;
+        } else {
+            return Status.ERROR;
+        }
     }
-    else {
-      return Status.ERROR;
-    }
-  }
 
     public void stopKeepConnect() {
         if (null == mAm || null == operation){
@@ -632,11 +635,17 @@ public class MqttService extends Service implements MqttTraceHandler {
      * @return
      */
     public AlarmManager startKeepConnect(long repeatTime, long triggerTime) {
-        Trace.d(TAG, "startKeepConnect() ");
-        operation = PendingIntent.getBroadcast(MqttService.this, 0, new Intent(ACTION_ALARM_KEEP_CONNECT), 0);
+        Trace.d(TAG, "startKeepConnect() repeat time:" + ((repeatTime + 0f) / 1000 / 60) + "min,next time:" + getFormateTime(triggerTime));
+        operation = PendingIntent.getBroadcast(MqttService.this, 0, new Intent(ACTION_ALARM_KEEP_CONNECT), PendingIntent.FLAG_CANCEL_CURRENT);
         mAm = (AlarmManager) MqttService.this.getSystemService(Context.ALARM_SERVICE);
-        stopKeepConnect();
-        mAm.setInexactRepeating(AlarmManager.RTC_WAKEUP, triggerTime, repeatTime, operation);
+        //        stopKeepConnect();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mAm.setWindow(AlarmManager.RTC_WAKEUP, triggerTime, 5000, operation);
+            this.keepConnectRepeatTime = repeatTime;
+        } else {
+            mAm.setRepeating(AlarmManager.RTC_WAKEUP, triggerTime, repeatTime, operation);
+        }
+
         return mAm;
     }
 
@@ -678,8 +687,9 @@ public class MqttService extends Service implements MqttTraceHandler {
 
 		unregisterBroadcastReceivers();
 
-		if (this.messageStore !=null )
-			this.messageStore.close();
+        if (this.messageStore != null) {
+            this.messageStore.close();
+        }
 
 		super.onDestroy();
 	}
@@ -808,19 +818,24 @@ public class MqttService extends Service implements MqttTraceHandler {
 					ConnectivityManager.CONNECTIVITY_ACTION));
 		}
 
-		if (Build.VERSION.SDK_INT < 14 /**Build.VERSION_CODES.ICE_CREAM_SANDWICH**/) {
-			// Support the old system for background data preferences
-			ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-			backgroundDataEnabled = cm.getBackgroundDataSetting();
-			if (backgroundDataPreferenceMonitor == null) {
-				backgroundDataPreferenceMonitor = new BackgroundDataPreferenceReceiver();
-				registerReceiver(
-						backgroundDataPreferenceMonitor,
-						new IntentFilter(
-								ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED));
-			}
-		}
-  }
+        if (Build.VERSION.SDK_INT < 14 /**Build.VERSION_CODES.ICE_CREAM_SANDWICH**/) {
+            // Support the old system for background data preferences
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            backgroundDataEnabled = cm.getBackgroundDataSetting();
+            if (backgroundDataPreferenceMonitor == null) {
+                backgroundDataPreferenceMonitor = new BackgroundDataPreferenceReceiver();
+                registerReceiver(
+                        backgroundDataPreferenceMonitor,
+                        new IntentFilter(
+                                ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED));
+            }
+        }
+
+        if (this.keepConnectReceiver == null) {
+            this.keepConnectReceiver = new KeepConnectReceiver();
+            this.registerReceiver(this.keepConnectReceiver, new IntentFilter(ACTION_ALARM_KEEP_CONNECT));
+        }
+    }
 
   private void unregisterBroadcastReceivers(){
   	if(networkConnectionMonitor != null){
@@ -828,15 +843,15 @@ public class MqttService extends Service implements MqttTraceHandler {
   		networkConnectionMonitor = null;
   	}
 
-  	if (Build.VERSION.SDK_INT < 14 /**Build.VERSION_CODES.ICE_CREAM_SANDWICH**/) {
-  		if(backgroundDataPreferenceMonitor != null){
-  			unregisterReceiver(backgroundDataPreferenceMonitor);
-  		}
-		}
-    if (this.keepConnectReceiver != null){
-      this.unregisterReceiver(this.keepConnectReceiver);
+        if (Build.VERSION.SDK_INT < 14 /**Build.VERSION_CODES.ICE_CREAM_SANDWICH**/) {
+            if (backgroundDataPreferenceMonitor != null) {
+                unregisterReceiver(backgroundDataPreferenceMonitor);
+            }
+        }
+        if (this.keepConnectReceiver != null) {
+            unregisterReceiver(this.keepConnectReceiver);
+        }
     }
-  }
 
 
   /*
@@ -848,24 +863,23 @@ public class MqttService extends Service implements MqttTraceHandler {
 
 		@Override
         @SuppressLint("Wakelock")
-		public void onReceive(Context context, Intent intent) {
-			traceDebug(TAG, "Internal network status receive.");
-			// we protect against the phone switching off
-			// by requesting a wake lock - we request the minimum possible wake
-			// lock - just enough to keep the CPU running until we've finished
-			PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-			WakeLock wl = pm
-					.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MQTT");
-			wl.acquire();
-			traceDebug(TAG,"Reconnect for Network recovery.");
-			if (isOnline()) {
-				traceDebug(TAG,"Online,reconnect.");
-				// we have an internet connection - have another try at
-				// connecting
-				reconnect();
-			} else {
-				notifyClientsOffline();
-			}
+        public void onReceive(Context context, Intent intent) {
+            traceDebug(TAG, "Internal network status receive.");
+            // we protect against the phone switching off
+            // by requesting a wake lock - we request the minimum possible wake
+            // lock - just enough to keep the CPU running until we've finished
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MQTT");
+            wl.acquire();
+            traceDebug(TAG, "Reconnect for Network recovery.");
+            if (isOnline()) {
+                traceDebug(TAG, "Online,reconnect.");
+                // we have an internet connection - have another try at
+                // connecting
+                reconnect();
+            } else {
+                notifyClientsOffline();
+            }
 
 			wl.release();
 		}
@@ -934,10 +948,15 @@ public class MqttService extends Service implements MqttTraceHandler {
                     Trace.d(TAG, "onReceive() receive alarm_connect_engine's message");
                     if (MqttManager.getInstance().isConneect()) {
                         Trace.d(TAG, "onReceive() socket have connected");
-                        mAm.cancel(operation);
+                        stopKeepConnect();
                         return;
                     }
-                    if (Utils.isNetWorkAvailable(MqttService.this)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        if (null != mAm && null != operation) {
+                            mAm.setWindow(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + keepConnectRepeatTime, 5000, operation);
+                        }
+                    }
+                    if (NetUtils.isNetWorkAvailable()) {
                         Trace.d(TAG, "onReceive() try to reconnect");
                         reconnect();
                     } else {
@@ -979,5 +998,12 @@ public class MqttService extends Service implements MqttTraceHandler {
     MqttConnection client = getConnection(clientHandle);
     client.deleteBufferedMessage(bufferIndex);
   }
+
+    private String getFormateTime(long time) {
+        if (null == simpleDateFormat) {
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+        return simpleDateFormat.format(time);
+    }
 
 }

@@ -200,14 +200,17 @@ public class ConnectCommand implements Command {
         }
 
         if (!TextUtils.isEmpty(mSslKeyPath)) {
+            InputStream key = null;
             try {
-                InputStream key = this.getClass().getResourceAsStream(mSslKeyPath);
+                key = this.getClass().getResourceAsStream(mSslKeyPath);
                 conOpt.setSocketFactory(client.getSSLSocketFactory(key,
                         mSslKeyPassword));
 
             } catch (MqttSecurityException e) {
                 Log.e(this.getClass().getCanonicalName(),
                         "MqttException Occured: ", e);
+            }finally {
+                Utils.closeIO(key);
             }
         }
 

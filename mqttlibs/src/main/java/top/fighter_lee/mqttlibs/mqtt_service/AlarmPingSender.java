@@ -30,6 +30,7 @@ import top.fighter_lee.mqttlibs.mqttv3.IMqttToken;
 import top.fighter_lee.mqttlibs.mqttv3.MqttPingSender;
 import top.fighter_lee.mqttlibs.mqttv3.internal.ClientComms;
 
+import java.text.SimpleDateFormat;
 
 /**
  * Default ping sender implementation on Android. It is based on AlarmManager.
@@ -44,22 +45,23 @@ class AlarmPingSender implements MqttPingSender {
 	// Identifier for Intents, log messages, etc..
 	private static final String TAG = "AlarmPingSender";
 
-	// TODO: Add log.
-	private ClientComms comms;
-	private MqttService service;
-	private BroadcastReceiver alarmReceiver;
-	private AlarmPingSender that;
-	private PendingIntent pendingIntent;
-	private volatile boolean hasStarted = false;
+    // TODO: Add log.
+    private ClientComms comms;
+    private MqttService service;
+    private BroadcastReceiver alarmReceiver;
+    private AlarmPingSender that;
+    private PendingIntent pendingIntent;
+    private volatile boolean hasStarted = false;
+    private SimpleDateFormat simpleDateFormat;
 
-	public AlarmPingSender(MqttService service) {
-		if (service == null) {
-			throw new IllegalArgumentException(
-					"Neither service nor client can be null.");
-		}
-		this.service = service;
-		that = this;
-	}
+    public AlarmPingSender(MqttService service) {
+        if (service == null) {
+            throw new IllegalArgumentException(
+                    "Neither service nor client can be null.");
+        }
+        this.service = service;
+        that = this;
+    }
 
 	@Override
 	public void init(ClientComms comms) {
@@ -101,13 +103,13 @@ class AlarmPingSender implements MqttPingSender {
 		}
 	}
 
-	@Override
-	public void schedule(long delayInMilliseconds) {
-		long nextAlarmInMilliseconds = System.currentTimeMillis()
-				+ delayInMilliseconds;
-		Log.d(TAG, "Schedule next alarm at " + nextAlarmInMilliseconds);
-		AlarmManager alarmManager = (AlarmManager) service
-				.getSystemService(Service.ALARM_SERVICE);
+    @Override
+    public void schedule(long delayInMilliseconds) {
+        long nextAlarmInMilliseconds = System.currentTimeMillis()
+                + delayInMilliseconds;
+        Log.d(TAG, "Schedule next alarm at " + getFormateTime(nextAlarmInMilliseconds));
+        AlarmManager alarmManager = (AlarmManager) service
+                .getSystemService(Service.ALARM_SERVICE);
 
         if(Build.VERSION.SDK_INT >= 23){
 			// In SDK 23 and above, dosing will prevent setExact, setExactAndAllowWhileIdle will force
@@ -142,7 +144,7 @@ class AlarmPingSender implements MqttPingSender {
 			// finished handling the broadcast.", but this class still get
 			// a wake lock to wait for ping finished.
 
-			Log.d(TAG, "Sending Ping at:" + System.currentTimeMillis());
+            Log.d(TAG, "Sending Ping at:" + getFormateTime(System.currentTimeMillis()));
 
 			PowerManager pm = (PowerManager) service
 					.getSystemService(Service.POWER_SERVICE);
@@ -154,28 +156,35 @@ class AlarmPingSender implements MqttPingSender {
 			// release it until ping response returns.
 			IMqttToken token = comms.checkForActivity(new IMqttActionListener() {
 
-				@Override
-				public void onSuccess(IMqttToken asyncActionToken) {
-					Log.d(TAG, "Success. Release lock(" + wakeLockTag + "):"
-							+ System.currentTimeMillis());
-					//Release wakelock when it is done.
-					wakelock.release();
-				}
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Log.d(TAG, "Success. Release lock(" + wakeLockTag + "):"
+                            + getFormateTime(System.currentTimeMillis()));
+                    //Release wakelock when it is done.
+                    wakelock.release();
+                }
 
-				@Override
-				public void onFailure(IMqttToken asyncActionToken,
-									  Throwable exception) {
-					Log.d(TAG, "Failure. Release lock(" + wakeLockTag + "):"
-							+ System.currentTimeMillis());
-					//Release wakelock when it is done.
-					wakelock.release();
-				}
-			});
+                @Override
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    Log.d(TAG, "Failure. Release lock(" + wakeLockTag + "):"
+                            + getFormateTime(System.currentTimeMillis()));
+                    //Release wakelock when it is done.
+                    wakelock.release();
+                }
+            });
 
 
-			if (token == null && wakelock.isHeld()) {
-				wakelock.release();
-			}
-		}
-	}
+            if (token == null && wakelock.isHeld()) {
+                wakelock.release();
+            }
+        }
+    }
+
+    private String getFormateTime(long time) {
+        if (null == simpleDateFormat) {
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+        return simpleDateFormat.format(time);
+    }
 }

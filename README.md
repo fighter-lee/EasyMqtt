@@ -73,26 +73,26 @@ ConnectCommand为连接操作类，可以设置相应属性。
 
 
 		MqttManager.getInstance()
-                .connect(new ConnectCommand()
-                                .setClientId(getClientId())
-                                .setServer("172.17.3.35")
-                                .setPort(61613)
-                                .setUserNameAndPassword("admin", "password")
-                                .setKeepAlive(30)
-                                .setTimeout(10)
-                                .setCleanSession(false)
-                        , new IMqttActionListener() {
-                            @Override
-                            public void onSuccess(IMqttToken asyncActionToken) {
-                                Trace.d(TAG, "onSuccess() ");
-                            }
-
-                            @Override
-                            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                                Trace.d(TAG, "onFailure() ");
-                                Trace.e(TAG, exception);
-                            }
-                        });
+	            .connect(new ConnectCommand()
+	                            .setClientId(getClientId())
+	                            .setServer("172.17.3.35")
+	                            .setPort(61613)
+	                            .setUserNameAndPassword("admin", "password")
+	                            .setKeepAlive(30)
+	                            .setTimeout(10)
+	                            .setCleanSession(false)
+	                    , new IMqttActionListener() {
+	                        @Override
+	                        public void onSuccess(IMqttToken asyncActionToken) {
+	                            Trace.d(TAG, "onSuccess() ");
+	                        }
+	
+	                        @Override
+	                        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+	                            Trace.d(TAG, "onFailure() ");
+	                            Trace.e(TAG, exception);
+	                        }
+	                    });
 
 连接成功后在页面上显示如图：
 
@@ -128,68 +128,72 @@ ConnectCommand为连接操作类，可以设置相应属性。
 	服务器是否保存消息
 
 		MqttManager.getInstance().pub(new PubCommand()
-                .setMessage("哈哈哈，我来了")
-                .setQos(1)
-                .setTopic("/fighter-lee.top/mqttlibs")
-                .setRetained(false), new IMqttActionListener() {
-            @Override
-            public void onSuccess(IMqttToken asyncActionToken) {
-                Trace.d(TAG, "onSuccess() ");
-            }
-
-            @Override
-            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                Trace.e(TAG, exception);
-            }
-        });
+   	         .setMessage("哈哈哈，我来了")
+   	         .setQos(1)
+   	         .setTopic("/fighter-lee.top/mqttlibs")
+   	         .setRetained(false), new IMqttActionListener() {
+   	     @Override
+   	     public void onSuccess(IMqttToken asyncActionToken) {
+   	         Trace.d(TAG, "onSuccess() ");
+   	     }
+	
+   	     @Override
+   	     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+   	         Trace.e(TAG, exception);
+   	     }
+   	 });
 
 #### 订阅消息主题
 
 	MqttManager.getInstance().sub(new SubCommand()
-                .setQos(1)
-                .setTopic("/fighter-lee.top/mqttlibs"), new IMqttActionListener() {
-            @Override
-            public void onSuccess(IMqttToken asyncActionToken) {
-                Trace.d(TAG, "onSuccess() ");
-            }
-
-            @Override
-            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                Trace.e(TAG, exception);
-            }
-        });
+	            .setQos(1)
+	            .setTopic("/fighter-lee.top/mqttlibs"), new IMqttActionListener() {
+	        @Override
+	        public void onSuccess(IMqttToken asyncActionToken) {
+	            Trace.d(TAG, "onSuccess() ");
+	        }
+	
+	        @Override
+	        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+	            Trace.e(TAG, exception);
+	        }
+	    });
 
 #### 取消订阅消息主题
 
 	MqttManager.getInstance().unSub(new UnsubCommand()
-                .setTopic("/fighter-lee.top/mqttlibs"), new IMqttActionListener() {
-            @Override
-            public void onSuccess(IMqttToken asyncActionToken) {
-                Trace.d(TAG, "onSuccess() ");
-            }
-
-            @Override
-            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                Trace.e(TAG, exception);
-            }
-        });
+	            .setTopic("/fighter-lee.top/mqttlibs"), new IMqttActionListener() {
+	        @Override
+	        public void onSuccess(IMqttToken asyncActionToken) {
+	            Trace.d(TAG, "onSuccess() ");
+	        }
+	
+	        @Override
+	        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+	            Trace.e(TAG, exception);
+	        }
+	    });
 
 #### 接收消息
 
 	MqttManager.getInstance().registerMessageListener(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable cause) {
-                Trace.e(TAG, cause);
-            }
+	        @Override
+	        public void connectionLost(Throwable cause) {
+	            Trace.e(TAG, cause);
+	        }
+	
+	        @Override
+	        public void messageArrived(String topic, MqttMessage message) throws Exception {
+	            Trace.d(TAG, "messageArrived() topic:"+topic);
+	            Trace.d(TAG, "messageArrived() message:"+message);
+	        }
+	
+	        @Override
+	        public void deliveryComplete(IMqttDeliveryToken token) {
+	
+	        }
+	    });
 
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Trace.d(TAG, "messageArrived() topic:"+topic);
-                Trace.d(TAG, "messageArrived() message:"+message);
-            }
+### 坑与解
 
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
+1.若连接时使用ssl协议，在改变设备时间后，会导致无法重连，必须重启应用才能重连，而建立普通的连接，则不会有这个问题。
